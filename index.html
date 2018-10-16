@@ -1,4 +1,4 @@
-!<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     
@@ -7,11 +7,37 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
-    <script src="main.js"></script>
+    
 </head>
 <body>
-    <canvas width="200" height="200" id="can">
-
+    <div id  = "program">
+    <div id = "topMenu">
+        Podaja link do grafiki 
+        <input type="text" id = "link"> 
+        <input type = "submit"  value = "Open" onclick="OnLoadImage()">
+        <input type = "submit"  value = "Clear" onclick="canvasClear()">
+    </div>
+    <div id = "leftMenu"></div>
+    <canvas width="800" height="500" id="can">
+        </div>
     </canvas>
 </body>
+<script>
+    const canvasElem = document.querySelector('#can');
+    const ctx = canvasElem.getContext('2d');
+    let image  = new Image();
+    
+    function OnLoadImage()
+    {
+    canvasClear();
+    image.src = document.querySelector("#link").value;
+    image.onload = function () { ctx.drawImage(image , 0, 0); };
+    }
+
+    function canvasClear()
+    {
+        ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
+    }
+    
+</script>
 </html>
