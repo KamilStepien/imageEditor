@@ -14,30 +14,104 @@
     <div id = "topMenu">
         Podaja link do grafiki 
         <input type="text" id = "link"> 
-        <input type = "submit"  value = "Open" onclick="OnLoadImage()">
-        <input type = "submit"  value = "Clear" onclick="canvasClear()">
+        <input type = "submit"  id = "Open" value = "Open" >
+        <input type = "submit"  id = "Clear" value = "Clear" >
     </div>
-    <div id = "leftMenu"></div>
+    <div id = "leftMenu">
+        <p>pędzel</p>
+         szerokość:<input type = "number" min = "2" max = "100" id = "paintbrush_width"  value = "10" >
+         wysokość:<input type = "number"  min = "2" max = "100" id = "paintbrush_height" value = "10" >
+         <br><br>
+         <div id = "BoxColors">
+            Red<input type="range" name="points" id = "ColorRed" class = "ColorRange" min="0" max="255">
+            Green<input type="range" name="points" id = "ColorGreen"  class = "ColorRange" min="0" max="255">
+            Blue<input type="range" name="points" id = "ColorBlue" class = "ColorRange" min="0" max="255">
+            <div id = "showColor" ></div>
+         </div>
+         
+    </div>
     <canvas width="800" height="500" id="can">
         </div>
     </canvas>
 </body>
 <script>
-    const canvasElem = document.querySelector('#can');
-    const ctx = canvasElem.getContext('2d');
     let image  = new Image();
+    let canvasElem = document.querySelector('#can');
+    let ctx = canvasElem.getContext('2d');
+    let WhichMouseButtonClick;
+  
+
+    document.querySelector("#Clear").addEventListener('click',canvasClear)
+    canvasElem.addEventListener('mousemove',Paint)
     
+    canvasElem.addEventListener('mousedown', function WhichMouseButton(e) {
+        WhichMouseButtonClick = e.button;
+    })
+
+    canvasElem.addEventListener('mouseup', function (){
+        WhichMouseButtonClick = null;
+    })
+
+
+
+    document.querySelector("#BoxColors").addEventListener('mousemove', function (){
+        document.querySelector("#showColor").style.backgroundColor = 
+        "rgb(" +document.querySelector("#ColorRed").value+","+document.querySelector("#ColorGreen").value 
+        +","+document.querySelector("#ColorBlue").value +")";
+    })
+
+
+    document.querySelector("#Open").addEventListener('click',
     function OnLoadImage()
     {
     canvasClear();
-    image.src = document.querySelector("#link").value;
-    image.onload = function () { ctx.drawImage(image , 0, 0); };
-    }
+    
+    //image.src = document.querySelector("#link").value;
+   // image.src = "1.jpg";
+   // image.crossOrigin = "Anonymous";
+  //  image.onload = function () { ctx.drawImage(image , 0, 0); };
+    })
 
+
+   
     function canvasClear()
     {
         ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
+       
     }
-    
+
+     function Paint (e)
+    {
+        
+        const imagedata = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+        let x = e.pageX- this.offsetLeft;     
+        let y = e.pageY - this.offsetTop; 
+        let paintbrush_width = (document.querySelector("#paintbrush_width").value);
+        let paintbrush_height = document.querySelector("#paintbrush_height").value;
+        paintbrush_width -= paintbrush_width%2;
+        paintbrush_height -= paintbrush_height%2;
+
+        console.log(WhichMouseButtonClick)
+         if(WhichMouseButtonClick == 0)
+         {
+            for(let  i = 0 ; i <paintbrush_width ;i++)
+            {
+                for(let j =0 ; j<paintbrush_height ;j++)
+                {
+                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j -paintbrush_height/2 )*canvasElem.width))*4)] = document.querySelector("#ColorRed").value; // czerwony
+                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+1] = document.querySelector("#ColorGreen").value; // zielony
+                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+2] = document.querySelector("#ColorBlue").value; // niebieski
+                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
+                }
+        
+            }
+           
+            ctx.putImageData(imagedata, 0, 0);
+         }
+            
+    }
+
+   
+
 </script>
 </html>
