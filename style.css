@@ -1,39 +1,222 @@
-
-body
-{
-   width: 1002px;
-   margin: 0 auto;
+.myRange{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 7px;
+    border-radius: 5px;
+    background: #5c5b5b;
+    outline: none;
+    opacity: 0.4;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
 }
 
+.myRange:hover {
+    opacity: 1;
+}
 
+.myRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.myRange::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+canvas
+{
+    background-color: white;
+    margin-top:  20px;
+    margin-bottom: 20px;
+}
+body
+{
+   background-color: rgb(27, 27, 27);
+   margin: 0 auto;
+   color: white;
+}
+hr
+{
+    margin: 10px 5px;
+    opacity: 0.7;
+   
+}
+ul
+{
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+    display: flex;
+}
+
+#showColor
+{
+    background-color: black;
+}
 #program 
 {
     display: flex;
     flex-wrap: wrap;
-    border:1px solid black;
-}
-
-#topMenu
-{
-    width: 100%;
-    height: 100px;
   
 }
-#leftMenu
+
+
+
+#menu
 {
-    width: 200px;
-    height:502px;
-   
+    background-color: rgb(15, 15, 15);
 }
+
+#menu ul
+{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding-left: 50px;
+    
+}
+
+#menu li 
+{
+    padding: 20px 20px;
+    padding-left: 15px;    
+    display: flex;
+    
+}
+
+#iconOpen input
+{
+    margin-left: 10px;
+}
+
+#menu #iconOpen:hover
+{
+    width: 255px;
+
+}
+#menu #iconOpen
+{
+    width: 10px;
+    overflow: hidden;
+    display: flex;
+    transition: all 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+
+#iconOpen #Open
+{
+  
+   border: 0px;
+   background-color:transparent;
+   color: white;
+}
+
+
+#menu i, #PaintTols i
+{
+    color: white;
+    font-size: 19px;
+    opacity: 0.5;
+    
+}
+#menu i:hover , #PaintTols i:hover
+{
+    opacity: 1;
+}
+
+#canvasWindow
+{
+    display: flex;
+    
+    justify-content: center;
+}
+
+
+
 
 #showColor
 {
     width: 40px;
     height: 20px;
-    background-color: black;
+    background-color: rgba(230, 224, 224, 0.589);
 }
 
-canvas
-{
 
+#boxFilter , #boxPaint
+{
+    height: 0px;
+   
+    transition: height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    color:white;
+    overflow: hidden;
+    background-color: rgba(20, 17, 17, 0.616);
+    display: flex;
+    justify-content:  center;
+}
+
+#changeColor
+{
+    padding: 10px;
+}
+
+#changeColor div, #PaintTols div
+{
+  display:flex;
+  padding: 10px;
+  align-items: center
+}
+#changeColor p,  #PaintTols p
+{
+    
+    width: 70px;
+    margin: 0;
+    color: white;
+    opacity: 0.7;
+
+}
+
+#showColor
+{
+    margin: 45px 25px;
+    border: 1px solid rgb(245, 245, 245);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+#RGBTextvalue p 
+{
+    width: 10px;
+    margin: 0 5px 0 10px;
+}
+#RGBTextvalue input
+{
+    width: 40px;
+    
+}
+
+#PaintTols i 
+{
+    padding: 10px;
+    font-size: 22px;
+}
+
+#PaintTols ul 
+{
+    justify-content: center;
+}
+
+#SizeBrushText
+{
+    margin: 0 auto;
 }

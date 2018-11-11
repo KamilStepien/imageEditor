@@ -7,111 +7,299 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
-    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+
 </head>
 <body>
-    <div id  = "program">
-    <div id = "topMenu">
-        Podaja link do grafiki 
-        <input type="text" id = "link"> 
-        <input type = "submit"  id = "Open" value = "Open" >
-        <input type = "submit"  id = "Clear" value = "Clear" >
-    </div>
-    <div id = "leftMenu">
-        <p>pędzel</p>
-         szerokość:<input type = "number"  min = "2" max = "100" id = "paintbrush_width"  value = "10" >
-         wysokość:<input type = "number"  min = "2" max = "100" id = "paintbrush_height" value = "10" >
-         <br><br>
-         <div id = "BoxColors">
-            Red<input type="range" name="points" value = "0" id = "ColorRed" class = "ColorRange" min="0" max="255">
-            Green<input type="range" name="points" value = "0" id = "ColorGreen"  class = "ColorRange" min="0" max="255">
-            Blue<input type="range" name="points"  value = "0" id = "ColorBlue" class = "ColorRange" min="0" max="255">
-            <div id = "showColor" ></div>
-         </div>
-         
-    </div>
-    <canvas width="800" height="500" id="can">
+    
+    
+        <div id= "menu">
+            <ul>
+                <li id="iconOpen"><i class="far fa-folder-open"></i>
+                        <input type="text" id = "link"> 
+                        <input type = "submit"  id = "Open" value = "Open" >
+                </li>
+                <hr>
+                <li><i  id = "Clear" class="fas fa-trash-alt"></i></li>
+                
+                <hr>
+                
+                <li><i  id ="buttonPaint" class="fas fa-paint-brush"></i></li>
+                <li><i id ="buttonfiltr" class="fas fa-equals"></i></li>
+               
+            </ul>
         </div>
-    </canvas>
+        
+        <div id ="boxFilter" >
+
+               <hr>
+        </div>
+        
+        <div id ="boxPaint" >
+                <div id = "changeColor">
+                       <div><p>Red</p> <input class="myRange" type="range" name="points" value = "0"  id = "ColorRed"  class = "ColorRange"  min="0" max="255"></div> 
+                       <div><p>Green</p> <input  class="myRange" type="range" name="points" value = "0" id = "ColorGreen"  class = "ColorRange" min="0" max="255"></div> 
+                        <div><p>Blue</p> <input  class="myRange" type="range" name="points"  value = "0" id = "ColorBlue" class = "ColorRange" min="0" max="255"></div> 
+                        <div id= "RGBTextvalue"><p>R</p> <input id = "ColorRedText" type="number"name="nazwa" min="0" max="255"> <p>G</p> <input  type="number"id = "ColorGreenText" name="nazwa" min="0" max="255"><p>B</p> <input  type="number" id = "ColorBlueText" name="nazwa" min="0" max="255"></div>
+                </div>
+                <div id = "showColor" >
+                </div>
+                <hr>
+                <div id = "PaintTols">
+                    <ul>
+                        <li><i id ="eraser" class="fas fa-eraser"></i></li>
+                        <li><i  id = "brush" class="fas fa-paint-brush"></i></li>
+                    </ul>
+                    <div><p>Size</p> <input  class="myRange" type="range" name="points"  value = "0" id = "SizeTols"  min="2" max="30"></div> 
+                    <div><input id = "SizeTolsText" type="number"name="nazwa" min="0" max="30"> </div>
+                </div>
+        </div>
+       
+       
+        <div id ="canvasWindow" >
+        <canvas width="800" height="500" id="can">
+            </div>
+        </canvas>
+        </div>
+
+
+
+
+   
+    
+    
 </body>
 <script>
+
+
+    class Tols 
+    {
+        constructor ( nameId , isTrue)
+        {
+            this.nameId = nameId;
+            this.isTrue = isTrue;
+
+        }
+        
+    }
+
+
+    // zmiene przechowujące wartości r,g,b, 
+    let rValue = 0 ;
+    let gValue =0;
+    let bValue =0 ;
+    let  tols = [ new Tols("brush", false) , new Tols("eraser", false) ]
     let image  = new Image();
     let canvasElem = document.querySelector('#can');
     let ctx = canvasElem.getContext('2d');
     let WhichMouseButtonClick;
-  
-
-    document.querySelector("#Clear").addEventListener('click',canvasClear)
-    canvasElem.addEventListener('mousemove',Paint)
     
-    canvasElem.addEventListener('mousedown', function WhichMouseButton(e) {
-        WhichMouseButtonClick = e.button;
+   // tols.push("brush",false, "eraser" , false);// nazwa narzedzia , wartość true lub false zależy czy jest używane teraz
+    let sizeTols;
+    
+    
+    //zmienianie kolorów pedzla  i wyswietlanie w divie na żywo 
+     document.querySelector("#changeColor").addEventListener('mousemove', function (){
+
+         rValue = document.querySelector("#ColorRed").value;
+         gValue = document.querySelector("#ColorGreen").value;
+         bValue = document.querySelector("#ColorBlue").value;
+
+       SetColor(rValue , gValue , bValue);
+        
+     
+
+    })
+    // 3 addEventListener zmieniające na zywo wartości rValue , gValue , bValue i dopdalające funkcje SetColor
+    document.querySelector("#ColorRedText").addEventListener('input', function (e){
+        
+       
+       rValue =  document.querySelector("#ColorRedText").value;
+       SetColor(rValue , gValue , bValue);
     })
 
-    canvasElem.addEventListener('mouseup', function (){
-        WhichMouseButtonClick = null;
+    document.querySelector("#ColorGreenText").addEventListener('input', function (e){
+
+    gValue =  document.querySelector("#ColorGreenText").value;
+    SetColor(rValue , gValue , bValue);
     })
 
+    document.querySelector("#ColorBlueText").addEventListener('input', function (e){
 
-
-    document.querySelector("#BoxColors").addEventListener('mousemove', function (){
-        document.querySelector("#showColor").style.backgroundColor = 
-        "rgb(" +document.querySelector("#ColorRed").value+","+document.querySelector("#ColorGreen").value 
-        +","+document.querySelector("#ColorBlue").value +")";
+    bValue =  document.querySelector("#ColorBlueText").value;
+    SetColor(rValue , gValue , bValue);
     })
 
-
-    document.querySelector("#Open").addEventListener('click',
-    function OnLoadImage()
+    //funkcaj która ustawia na zywo range  , kolor diva w którym pokazujemy aktualny ustawiony  kolor i pola tekstowe gdzie możemy  ustawiać kolor
+    function SetColor(r, g, b)
     {
-    canvasClear();
+        document.querySelector("#showColor").style.backgroundColor = "rgb(" +r+","+g+","+b+")";
+        document.querySelector("#ColorRed").value = r;
+        document.querySelector("#ColorGreen").value = g;
+        document.querySelector("#ColorBlue").value =b;
+        document.querySelector("#ColorRedText").value = r ;
+        document.querySelector("#ColorGreenText").value = g;
+        document.querySelector("#ColorBlueText").value = b;
     
-    image.src = document.querySelector("#link").value;
-    image.src = "1.jpg";
-    image.crossOrigin = "Anonymous";
-    image.onload = function () { ctx.drawImage(image , 0, 0); };
+    } 
+
+    /////////////////////////////////////////////////////////////////////
+    //zmienianie narzedzia 
+    document.querySelector("#brush").addEventListener('click', ()=>
+    {
+        tols[0].isTrue = true;
+        tols[1].isTrue = false;
+        TolsChangeStyle();
     })
 
+    document.querySelector("#eraser").addEventListener('click', ()=>
+    {
+        tols[1].isTrue = true;
+        tols[0].isTrue = false;
+        TolsChangeStyle();
+    })
+    //zmiana opacity w zależności od wybranego nrzędzia 
+    function TolsChangeStyle()
+    {
+        for(let a = 0 ; a< tols.length ; a++)
+        {
+            if(tols[a].isTrue== true)
+            {
+                document.querySelector("#"+ tols[a].nameId).style.opacity = "1";
+            }
+            else
+            {
+                document.querySelector("#"+ tols[a].nameId).style.opacity = "0.5";
+            }
+        }
+    }
 
-   
+    // zmiana szerokośći narzedzia
+    document.querySelector("#SizeTols").addEventListener('mousemove', function (){
+        sizeTols =   document.querySelector("#SizeTols").value;
+        document.querySelector("#SizeTolsText").value= sizeTols;
+        sizeTols -= sizeTols%2;
+    })
+    document.querySelector("#SizeTolsText").addEventListener('input', function (){
+        sizeTols =   document.querySelector("#SizeTolsText").value;
+        document.querySelector("#SizeTols").value= sizeTols;
+        sizeTols -= sizeTols%2;
+    })
+
+    //Czysczenie canvasa
+    document.querySelector("#Clear").addEventListener('click',canvasClear)
+    
+    //Czyszczenie canvasa funkcja 
     function canvasClear()
     {
         ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
        
     }
 
+     //wczytywanie grafiki do okna canvas
+     document.querySelector("#Open").addEventListener('click',
+    function OnLoadImage()
+    {
+    canvasClear();   
+    image.src = document.querySelector("#link").value;
+    image.onload = function () { ctx.drawImage(image , 0, 0); };
+    })
+    /////////////////////////////////////////
+    
+    //odczytywanie kodu klawisza z myszki , użyte podczas rysowania w canvasie
+     canvasElem.addEventListener('mousedown', function WhichMouseButton(e) {
+        WhichMouseButtonClick = e.button;
+    })
+
+    canvasElem.addEventListener('mouseup', function (){
+        WhichMouseButtonClick = null;
+    })
+    //rysoanie w canvasie gdy jest kliknięty przycisk maluj i wciskamy prawy klawisz myszy
+    canvasElem.addEventListener('mousemove',Paint)
+     //funkcja pozwalająca nam rysowac w canvasie
      function Paint (e)
     {
         
         const imagedata = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
         let x = e.pageX- this.offsetLeft;     
         let y = e.pageY - this.offsetTop; 
-        let paintbrush_width = (document.querySelector("#paintbrush_width").value);
-        let paintbrush_height = document.querySelector("#paintbrush_height").value;
-        paintbrush_width -= paintbrush_width%2;
-        paintbrush_height -= paintbrush_height%2;
-
         console.log(WhichMouseButtonClick)
-         if(WhichMouseButtonClick == 0)
+         if(WhichMouseButtonClick == 0 && tols[0].isTrue == true)
          {
-            for(let  i = 0 ; i <paintbrush_width ;i++)
+             //rysowanie w canvasie
+            for(let  i = 0 ; i <sizeTols ;i++)
             {
-                for(let j =0 ; j<paintbrush_height ;j++)
+                for(let j =0 ; j<sizeTols ;j++)
                 {
-                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j -paintbrush_height/2 )*canvasElem.width))*4)] = document.querySelector("#ColorRed").value; // czerwony
-                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+1] = document.querySelector("#ColorGreen").value; // zielony
-                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+2] = document.querySelector("#ColorBlue").value; // niebieski
-                    imagedata.data[(((i+x-paintbrush_width/2) +((y+j-paintbrush_height/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j -sizeTols/2 )*canvasElem.width))*4)] = rValue // czerwony
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+1] = gValue // zielony
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+2] = bValue // niebieski
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
                 }
         
             }
            
-            ctx.putImageData(imagedata, 0, 0);
-         }
             
+         }
+         if(WhichMouseButtonClick == 0 && tols[1].isTrue == true)
+         {
+             //rysowanie w canvasie
+            for(let  i = 0 ; i <sizeTols ;i++)
+            {
+                for(let j =0 ; j<sizeTols ;j++)
+                {
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j -sizeTols/2 )*canvasElem.width))*4)] = 255 // czerwony
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+1] = 255 // zielony
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+2] = 255 // niebieski
+                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
+                }
+        
+            }
+           
+           
+         }
+         ctx.putImageData(imagedata, 0, 0);  
     }
 
+
+    
+    document.querySelector("#buttonPaint").addEventListener('click', ()=>
+    {
+        
+        if(document.querySelector("#boxPaint").style.height=="0px")
+        {
+            document.querySelector("#boxPaint").style.height = "180px";
+            document.querySelector("#boxFilter").style.height = "0px";
+            document.querySelector("#buttonPaint").style.opacity = "1";
+            document.querySelector("#buttonfiltr").style.opacity = "0.5";
+        }
+        else
+        {
+            document.querySelector("#boxPaint").style.height = "0";
+            document.querySelector("#buttonPaint").style.opacity = "0.5";
+        }
+        
+    })
    
+
+
+     document.querySelector("#buttonfiltr").addEventListener('click', ()=>
+    {
+        if(document.querySelector("#boxFilter").style.height=="0px")
+        {
+            document.querySelector("#boxFilter").style.height = "100px";
+            document.querySelector("#boxPaint").style.height = "0px";
+            document.querySelector("#buttonPaint").style.opacity = "0.5";
+            document.querySelector("#buttonfiltr").style.opacity = "1";
+        }
+        else
+        {
+            document.querySelector("#boxFilter").style.height = "0";
+            document.querySelector("#buttonfiltr").style.opacity = "0.5";
+        }
+    })
+
 
 </script>
 </html>
