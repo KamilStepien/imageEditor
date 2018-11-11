@@ -19,13 +19,13 @@
     </div>
     <div id = "leftMenu">
         <p>pędzel</p>
-         szerokość:<input type = "number" min = "2" max = "100" id = "paintbrush_width"  value = "10" >
+         szerokość:<input type = "number"  min = "2" max = "100" id = "paintbrush_width"  value = "10" >
          wysokość:<input type = "number"  min = "2" max = "100" id = "paintbrush_height" value = "10" >
          <br><br>
          <div id = "BoxColors">
-            Red<input type="range" name="points" id = "ColorRed" class = "ColorRange" min="0" max="255">
-            Green<input type="range" name="points" id = "ColorGreen"  class = "ColorRange" min="0" max="255">
-            Blue<input type="range" name="points" id = "ColorBlue" class = "ColorRange" min="0" max="255">
+            Red<input type="range" name="points" value = "0" id = "ColorRed" class = "ColorRange" min="0" max="255">
+            Green<input type="range" name="points" value = "0" id = "ColorGreen"  class = "ColorRange" min="0" max="255">
+            Blue<input type="range" name="points"  value = "0" id = "ColorBlue" class = "ColorRange" min="0" max="255">
             <div id = "showColor" ></div>
          </div>
          
@@ -66,10 +66,10 @@
     {
     canvasClear();
     
-    //image.src = document.querySelector("#link").value;
-   // image.src = "1.jpg";
-   // image.crossOrigin = "Anonymous";
-  //  image.onload = function () { ctx.drawImage(image , 0, 0); };
+    image.src = document.querySelector("#link").value;
+    image.src = "1.jpg";
+    image.crossOrigin = "Anonymous";
+    image.onload = function () { ctx.drawImage(image , 0, 0); };
     })
 
 
