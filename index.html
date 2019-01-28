@@ -20,6 +20,11 @@
                         <input type="text" id = "link"> 
                         <input type = "submit"  id = "Open" value = "Open" >
                 </li>
+                <li id = "iconSize"><i class="far fa-window-maximize"></i>
+                    <P>Width:</P> <input type="text" id = "Width" min="100" max="2000"> 
+                    <p>Height:</p> <input type="text" id = "Height" min="100" max="2000"> 
+                    <input type = "submit"  id = "Change" value = "Change" >
+                </li>
                 <hr>
                 <li><i  id = "Clear" class="fas fa-trash-alt"></i></li>
                 
@@ -32,16 +37,20 @@
         </div>
         
         <div id ="boxFilter" >
-
-               <hr>
+            <div id = "filter">
+                <div><p>Jasność </p> <input  class="myRange" type="range" name="points" value = "0" id = "brightness"   min="-50" max="50"></div>
+                <div><p>Kontrast </p> <input  class="myRange" type="range" name="points" value = "0" id = "konst"   min="-100" max="100"></div> 
+                <div><p>Nasycenie </p> <input  class="myRange" type="range" name="points" value = "0" id = "nas"   value = 2 min="0" max="2" step="0.1"> </div>  
+            </div>
+                
         </div>
         
         <div id ="boxPaint" >
                 <div id = "changeColor">
-                       <div><p>Red</p> <input class="myRange" type="range" name="points" value = "0"  id = "ColorRed"  class = "ColorRange"  min="0" max="255"></div> 
-                       <div><p>Green</p> <input  class="myRange" type="range" name="points" value = "0" id = "ColorGreen"  class = "ColorRange" min="0" max="255"></div> 
-                        <div><p>Blue</p> <input  class="myRange" type="range" name="points"  value = "0" id = "ColorBlue" class = "ColorRange" min="0" max="255"></div> 
-                        <div id= "RGBTextvalue"><p>R</p> <input id = "ColorRedText" type="number"name="nazwa" min="0" max="255"> <p>G</p> <input  type="number"id = "ColorGreenText" name="nazwa" min="0" max="255"><p>B</p> <input  type="number" id = "ColorBlueText" name="nazwa" min="0" max="255"></div>
+                       <div><p>Red</p> <input class="myRange" type="range" name="points" value = "0"  id = "ColorRed"  class = "ColorRange"  min="0" max="255" value="0"></div> 
+                       <div><p>Green</p> <input  class="myRange" type="range" name="points" value = "0" id = "ColorGreen"  class = "ColorRange" min="0" max="255" value="0"></div> 
+                        <div><p>Blue</p> <input  class="myRange" type="range" name="points"  value = "0" id = "ColorBlue" class = "ColorRange" min="0" max="255" value="0"></div> 
+                        <div id= "RGBTextvalue"><p>R</p> <input id = "ColorRedText" type="number"name="nazwa" min="0" max="255"> <p>G</p> <input  type="number" id = "ColorGreenText" name="nazwa" min="0" max="255"><p>B</p> <input  type="number" id = "ColorBlueText" name="nazwa" min="0" max="255"></div>
                 </div>
                 <div id = "showColor" >
                 </div>
@@ -50,29 +59,30 @@
                     <ul>
                         <li><i id ="eraser" class="fas fa-eraser"></i></li>
                         <li><i  id = "brush" class="fas fa-paint-brush"></i></li>
+                        <li><i id = "tester" class="fas fa-eye-dropper"></i></li>
+                    </ul>
+                     <ul>
+                            <li><i id ="shapeSquare"  class="fas fa-square"></i></li>
+                            <li><i id ="shapeCircle"  class="fas fa-circle"></i></li>
+                            
                     </ul>
                     <div><p>Size</p> <input  class="myRange" type="range" name="points"  value = "0" id = "SizeTols"  min="2" max="30"></div> 
-                    <div><input id = "SizeTolsText" type="number"name="nazwa" min="0" max="30"> </div>
+                    <div><input id = "SizeTolsText" type="number"name="nazwa" min="0" max="30" value="2"> </div>
+                   
                 </div>
         </div>
        
        
         <div id ="canvasWindow" >
         <canvas width="800" height="500" id="can">
-            </div>
         </canvas>
         </div>
-
-
-
-
-   
     
     
 </body>
 <script>
 
-
+    // nameId - nazwa narzędznia , isTrue - czy jest używane 
     class Tols 
     {
         constructor ( nameId , isTrue)
@@ -89,11 +99,14 @@
     let rValue = 0 ;
     let gValue =0;
     let bValue =0 ;
-    let  tols = [ new Tols("brush", false) , new Tols("eraser", false) ]
+    let  tols = [ new Tols("brush", false) , new Tols("eraser", false) , new Tols("tester" , false) , new Tols("shapeSquare" , false),new Tols("shapeCircle" , false)  ]
     let image  = new Image();
     let canvasElem = document.querySelector('#can');
     let ctx = canvasElem.getContext('2d');
     let WhichMouseButtonClick;
+    let myImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+    let CopymyImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+    canvasClear();
     
    // tols.push("brush",false, "eraser" , false);// nazwa narzedzia , wartość true lub false zależy czy jest używane teraz
     let sizeTols;
@@ -111,7 +124,7 @@
      
 
     })
-    // 3 addEventListener zmieniające na zywo wartości rValue , gValue , bValue i dopdalające funkcje SetColor
+    // 3 addEventListener zmieniające na zywo wartości rValue , gValue , bValue i dopdpalające funkcje SetColor
     document.querySelector("#ColorRedText").addEventListener('input', function (e){
         
        
@@ -141,6 +154,7 @@
         document.querySelector("#ColorRedText").value = r ;
         document.querySelector("#ColorGreenText").value = g;
         document.querySelector("#ColorBlueText").value = b;
+
     
     } 
 
@@ -150,6 +164,7 @@
     {
         tols[0].isTrue = true;
         tols[1].isTrue = false;
+        tols[2].isTrue = false;
         TolsChangeStyle();
     })
 
@@ -157,8 +172,38 @@
     {
         tols[1].isTrue = true;
         tols[0].isTrue = false;
+        tols[2].isTrue = false;
         TolsChangeStyle();
     })
+    document.querySelector("#tester").addEventListener('click', ()=>
+    {
+        tols[1].isTrue = false;
+        tols[0].isTrue = false;
+        tols[2].isTrue = true;
+        tols[3].isTrue = false;
+        tols[4].isTrue = false;
+        TolsChangeStyle();
+    })
+    document.querySelector("#shapeSquare").addEventListener('click', ()=>
+    {
+        if(tols[0].isTrue|| tols[1].isTrue)
+        {
+            tols[3].isTrue = true;
+            tols[4].isTrue = false;
+        }
+        TolsChangeStyle();
+    })
+    
+    document.querySelector("#shapeCircle").addEventListener('click', ()=>
+    {
+        if(tols[0].isTrue || tols[1].isTrue)
+        {
+            tols[3].isTrue = false;
+            tols[4].isTrue = true;
+        }
+        TolsChangeStyle();
+    })
+
     //zmiana opacity w zależności od wybranego nrzędzia 
     function TolsChangeStyle()
     {
@@ -193,90 +238,252 @@
     //Czyszczenie canvasa funkcja 
     function canvasClear()
     {
-        ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
+        
        
+        console.log("to");
+        ctx.fillStyle="rgb(255,255 ,255 )";
+        ctx.fillRect(0, 0, canvasElem.width, canvasElem.height);
+        myImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+        CopymyImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
     }
+    
 
      //wczytywanie grafiki do okna canvas
      document.querySelector("#Open").addEventListener('click',
     function OnLoadImage()
     {
-    canvasClear();   
+   // canvasClear(); 
     image.src = document.querySelector("#link").value;
-    image.onload = function () { ctx.drawImage(image , 0, 0); };
+
+    image.onload = function () { 
+        
+        canvasElem.width = image.width;
+        canvasElem.height = image.height;
+        ctx.drawImage(image , 0, 0)  
+      
+    // pobieranie tablicy pikseli
+    myImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+    CopymyImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+    }
     })
     /////////////////////////////////////////
     
     //odczytywanie kodu klawisza z myszki , użyte podczas rysowania w canvasie
-     canvasElem.addEventListener('mousedown', function WhichMouseButton(e) {
+     document.addEventListener('mousedown', function WhichMouseButton(e) {
         WhichMouseButtonClick = e.button;
     })
 
-    canvasElem.addEventListener('mouseup', function (){
+    document.addEventListener('mouseup', function (){
         WhichMouseButtonClick = null;
     })
-    //rysoanie w canvasie gdy jest kliknięty przycisk maluj i wciskamy prawy klawisz myszy
-    canvasElem.addEventListener('mousemove',Paint)
-     //funkcja pozwalająca nam rysowac w canvasie
-     function Paint (e)
+
+    // sparwdzanie koloru po kliknieciu 
+    canvasElem.addEventListener('click',(e)=>
     {
+        let x = e.pageX- canvasElem.offsetLeft;     
+        let y = e.pageY - canvasElem.offsetTop; 
+      
+         if(tols[2].isTrue)
+            CheckColor(x,y,canvasElem);
         
-        const imagedata = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
-        let x = e.pageX- this.offsetLeft;     
-        let y = e.pageY - this.offsetTop; 
-        console.log(WhichMouseButtonClick)
-         if(WhichMouseButtonClick == 0 && tols[0].isTrue == true)
-         {
-             //rysowanie w canvasie
-            for(let  i = 0 ; i <sizeTols ;i++)
-            {
-                for(let j =0 ; j<sizeTols ;j++)
-                {
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j -sizeTols/2 )*canvasElem.width))*4)] = rValue // czerwony
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+1] = gValue // zielony
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+2] = bValue // niebieski
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
-                }
+    })
+    //rysoanie w canvasie gdy jest kliknięty przycisk maluj i wciskamy prawy klawisz myszy
+    canvasElem.addEventListener('mousemove',(e)=>
+    {
+        let x = e.pageX-  canvasElem.offsetLeft;     
+        let y = e.pageY - canvasElem.offsetTop; 
         
-            }
-           
+        if(WhichMouseButtonClick == 0)
+        {
+            if(tols[0].isTrue)
+            Paint(x,y);
+            else if(tols[1].isTrue)
+            Erase(x,y);
             
-         }
-         if(WhichMouseButtonClick == 0 && tols[1].isTrue == true)
-         {
-             //rysowanie w canvasie
-            for(let  i = 0 ; i <sizeTols ;i++)
-            {
-                for(let j =0 ; j<sizeTols ;j++)
-                {
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j -sizeTols/2 )*canvasElem.width))*4)] = 255 // czerwony
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+1] = 255 // zielony
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+2] = 255 // niebieski
-                    imagedata.data[(((i+x-sizeTols/2) +((y+j-sizeTols/2)*canvasElem.width))*4)+3] = 255; // ustawienie braku przezroczystości
-                }
-        
-            }
-           
-           
-         }
-         ctx.putImageData(imagedata, 0, 0);  
+        }
+    })
+    // sprawdzanie koloru
+    function CheckColor(x , y , canvas)
+    {
+       console.log(x,y ,canvas.width , canvas.height);
+        console.log(y*canvas.width + x);
+        myImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        console.log(myImgData.data[(y*canvas.width + x)*4]);
+        rValue = myImgData.data[(y*canvas.width + x)*4];
+        gValue = myImgData.data[((y*canvas.width + x)*4)+1];
+        bValue = myImgData.data[((y*canvas.width + x)*4)+2];
+         SetColor(rValue, gValue, bValue);
+    }
+
+    // gumak w canvasie
+    function Erase( x ,  y)
+    {
+        if(tols[4].isTrue)
+        {
+            ShapeCircle(x,y,"rgb(255,255,255)");
+        }    
+        if(tols[3].isTrue)
+        {
+            ShapeSquare(x,y,"rgb(255,255,255)");
+        }
+            
+    }
+     //funkcja pozwalająca nam rysowac w canvasie
+     function Paint (x, y)
+    {
+        if(tols[4].isTrue)
+        {
+            ShapeCircle(x,y,"rgb("+rValue+","+gValue+" ,"+bValue+" )");
+        }    
+        if(tols[3].isTrue)
+        {
+            ShapeSquare(x,y,"rgb("+rValue+","+gValue+" ,"+bValue+" )");
+        }
+            
+            
+    }
+
+    function ShapeCircle(x,y,rgb)
+    {
+            //rysowanie  kołą w canvasie
+            ctx.beginPath();
+            ctx.fillStyle = rgb;
+            ctx.arc(x,y,sizeTols,0,360*Math.PI/180);
+            ctx.fill();
+            ctx.closePath(); 
     }
 
 
+    function ShapeSquare(x,y,rgb)
+    {
+        //rysowanie kwadratu   
+            ctx.beginPath();
+            ctx.fillStyle=rgb;
+            ctx.fillRect(x-sizeTols/2,y-sizeTols/2,sizeTols*1.5,sizeTols*1.5);
+            ctx.closePath();  
+    }
+
+    // zmiana wielokści okna 
+
+    document.querySelector("#Change").addEventListener('click',()=>
+    
+    {
+        let Width = document.querySelector("#Width");
+        let Height = document.querySelector("#Height");
+        
+        if(!(Width.value ==" "|| Height.value ==" "))
+        {
+        canvasElem.width  = Width.value;
+        canvasElem.height  =   Height.value;
+        }
+      
+    }
+    )
+
+  
+
+////////////////////////////////////////////////////////FILTRY/////////////////////////////////////////////////////////////
+    document.querySelector("#buttonfiltr").addEventListener('click' ,()=>
+    {
+        
+         myImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+         CopymyImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
+        
+    })
+    // rozjaśnianie zdjecia 
+    
+    document.querySelector("#brightness").addEventListener('change',
+    ()=>
+    {
+    CopymyImgData.data = [...myImgData.data];
+
+
+    for (let i = 0; i < myImgData.data.length; i += 4)
+    {
+        CopymyImgData.data[i] = myImgData.data[i] + 255 * ( document.querySelector("#brightness").value / 100)
+        CopymyImgData.data[i+1] = myImgData.data[i+1] +255 * ( document.querySelector("#brightness").value / 100)
+        CopymyImgData.data[i+2] = myImgData.data[i+2] + 255 * ( document.querySelector("#brightness").value / 100)
+    }
+
+   
+
+    ctx.putImageData(CopymyImgData, 0, 0);
+    
+    })
+
+    // contrast ///
+   
+
+    document.querySelector("#konst").addEventListener('change', ()=>{
+    CopymyImgData.data = [...myImgData.data];
+    
+   
+    let variable = (259.0 * (parseInt( document.querySelector("#konst").value) + 255.0)) / (255.0 * (259.0 - parseInt( document.querySelector("#konst").value)));
+    
+    for (let i = 0; i <  myImgData.data.length; i += 4)
+    {
+        CopymyImgData.data[i] = Betwen0to255(variable * (myImgData.data[i] - 128.0) + 128.0);
+        CopymyImgData.data[i+1] = Betwen0to255(variable * (myImgData.data[i+1] - 128.0) + 128.0);
+        CopymyImgData.data[i+2] = Betwen0to255(variable * (myImgData.data[i+2] - 128.0) + 128.0);
+    }
+
+    function Betwen0to255(value) {
+    if (value > 255) return 255;
+    if (value <0) return 0;
+    return value;
+}
+
+
+    ctx.putImageData(CopymyImgData, 0, 0);
+})
+
+
+//saturacja
+document.querySelector("#nas").addEventListener('change', ()=>{
+    CopymyImgData.data = [...myImgData.data];
+    
+   
+    
+    for (let i = 0; i < myImgData.data.length; i += 4)
+    {
+        
+        let TabHsv = rgbToHsv(myImgData.data[i],myImgData.data[i+1],myImgData.data[i+2]);
+        
+        TabHsv[1] *= document.querySelector("#nas").value;
+        let TabRgb = hsvToRgb(TabHsv[0],TabHsv[1],TabHsv[2]);
+        
+        CopymyImgData.data[i] = TabRgb[0];
+        CopymyImgData.data[i+1] = TabRgb[1];
+        CopymyImgData.data[i+2] = TabRgb[2];
+    }
+
+    
+
+
+    ctx.putImageData(CopymyImgData, 0, 0);
+})
+
+    
+
+
+    ///////////////////////////////////////////////////////////
     
     document.querySelector("#buttonPaint").addEventListener('click', ()=>
     {
         
         if(document.querySelector("#boxPaint").style.height=="0px")
         {
-            document.querySelector("#boxPaint").style.height = "180px";
+            document.querySelector("#boxPaint").style.height = "190px";
             document.querySelector("#boxFilter").style.height = "0px";
+            document.querySelector("#boxPaint").style.padding = "20px";
+            document.querySelector("#boxFilter").style.padding = "0px";
             document.querySelector("#buttonPaint").style.opacity = "1";
             document.querySelector("#buttonfiltr").style.opacity = "0.5";
         }
         else
         {
             document.querySelector("#boxPaint").style.height = "0";
+            document.querySelector("#boxPaint").style.padding = "0px";
             document.querySelector("#buttonPaint").style.opacity = "0.5";
         }
         
@@ -292,14 +499,87 @@
             document.querySelector("#boxPaint").style.height = "0px";
             document.querySelector("#buttonPaint").style.opacity = "0.5";
             document.querySelector("#buttonfiltr").style.opacity = "1";
+            document.querySelector("#boxPaint").style.padding = "0px";
+            document.querySelector("#boxFilter").style.padding = "20px";
         }
         else
         {
             document.querySelector("#boxFilter").style.height = "0";
+            document.querySelector("#boxFilter").style.padding = "0px";
             document.querySelector("#buttonfiltr").style.opacity = "0.5";
         }
     })
 
 
+
+
+/**
+ * Converts an RGB color value to HSV. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and v in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSV representation
+ */
+ function rgbToHsv(r, g, b) {
+  r /= 255, g /= 255, b /= 255;
+
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  var h, s, v = max;
+
+  var d = max - min;
+  s = max == 0 ? 0 : d / max;
+
+  if (max == min) {
+    h = 0; // achromatic
+  } else {
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+
+    h /= 6;
+  }
+
+  return [ h, s, v ];
+}
+
+/**
+ * Converts an HSV color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes h, s, and v are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  v       The value
+ * @return  Array           The RGB representation
+ */
+function hsvToRgb(h, s, v) {
+  var r, g, b;
+
+  var i = Math.floor(h * 6);
+  var f = h * 6 - i;
+  var p = v * (1 - s);
+  var q = v * (1 - f * s);
+  var t = v * (1 - (1 - f) * s);
+
+  switch (i % 6) {
+    case 0: r = v, g = t, b = p; break;
+    case 1: r = q, g = v, b = p; break;
+    case 2: r = p, g = v, b = t; break;
+    case 3: r = p, g = q, b = v; break;
+    case 4: r = t, g = p, b = v; break;
+    case 5: r = v, g = p, b = q; break;
+  }
+
+  return [ r * 255, g * 255, b * 255 ];
+}
 </script>
 </html>
+
+

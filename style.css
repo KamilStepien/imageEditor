@@ -1,3 +1,30 @@
+input 
+{
+    border-radius: 7%;
+    border: 0;
+}
+
+input[type=number]
+ {
+   background-color: transparent;
+   color: white;
+   border: none;
+   font-weight: 700;
+   margin-left: 5px;
+   text-align: center;
+}
+input[type=button]
+{
+    height: 20px;
+    width: 10px;
+    z-index: 1000;
+    position: relative;
+    background-color: red;
+    display: flex;
+    justify-content: center;    
+}
+
+
 .myRange{
     -webkit-appearance: none;
     width: 100%;
@@ -8,6 +35,7 @@
     opacity: 0.4;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    
 }
 
 .myRange:hover {
@@ -35,8 +63,8 @@
 canvas
 {
     background-color: white;
-    margin-top:  20px;
-    margin-bottom: 20px;
+    
+    margin: 30px;
 }
 body
 {
@@ -54,7 +82,7 @@ ul
 {
     list-style: none;
     padding: 0;
-    margin-bottom: 0;
+    margin: 0;
     display: flex;
 }
 
@@ -98,28 +126,54 @@ ul
     margin-left: 10px;
 }
 
+
+#iconSize input
+{
+   
+    width: 30px;
+}
+
 #menu #iconOpen:hover
 {
     width: 255px;
 
 }
-#menu #iconOpen
+
+#menu #iconSize:hover
+{
+    width: 295px;
+
+}
+#menu #iconOpen , #menu #iconSize
 {
     width: 10px;
     overflow: hidden;
     display: flex;
     transition: all 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+#menu #iconSize p
+{
+padding: 0;
 
+margin: 1px 5px 0 20px;
 
-#iconOpen #Open
+font-weight: 600;
+font-size: 13px;
+
+}
+
+#iconSize #Change
+{
+    margin-left: 20px;
+    width: 100%;
+}
+#iconOpen #Open ,#iconSize #Change
 {
   
    border: 0px;
    background-color:transparent;
    color: white;
 }
-
 
 #menu i, #PaintTols i
 {
@@ -151,36 +205,43 @@ ul
 }
 
 
+
+
 #boxFilter , #boxPaint
 {
+    
+    padding: 10px;
     height: 0px;
-   
-    transition: height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     color:white;
     overflow: hidden;
     background-color: rgba(20, 17, 17, 0.616);
     display: flex;
     justify-content:  center;
+    
 }
+
 
 #changeColor
 {
     padding: 10px;
+    
 }
 
-#changeColor div, #PaintTols div
+#changeColor div, #PaintTols div , #filter div
 {
   display:flex;
   padding: 10px;
   align-items: center
 }
-#changeColor p,  #PaintTols p
+#changeColor p,  #PaintTols p , #filter p
 {
-    
+    display: flex;
     width: 70px;
     margin: 0;
     color: white;
     opacity: 0.7;
+    
 
 }
 
@@ -204,7 +265,10 @@ ul
     width: 40px;
     
 }
-
+#PaintTols
+{
+    padding: 15px;
+}
 #PaintTols i 
 {
     padding: 10px;
@@ -219,4 +283,13 @@ ul
 #SizeBrushText
 {
     margin: 0 auto;
+}
+#SizeTolsText
+{
+margin: 0 auto;
+}
+#filter input
+{
+    width: 100px;
+    margin-left: 20px;
 }
