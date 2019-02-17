@@ -87,6 +87,7 @@
     {
         constructor ( nameId , isTrue)
         {
+        
             this.nameId = nameId;
             this.isTrue = isTrue;
 
@@ -99,10 +100,13 @@
     let rValue = 0 ;
     let gValue =0;
     let bValue =0 ;
+    // tablica przechowująca narzedzia
     let  tols = [ new Tols("brush", false) , new Tols("eraser", false) , new Tols("tester" , false) , new Tols("shapeSquare" , false),new Tols("shapeCircle" , false)  ]
+    // tworzenie obiektu image
     let image  = new Image();
     let canvasElem = document.querySelector('#can');
     let ctx = canvasElem.getContext('2d');
+    //smiena przechowująca klikniety przycisk
     let WhichMouseButtonClick;
     let myImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
     let CopymyImgData = ctx.getImageData(0, 0, canvasElem.width, canvasElem.height);
